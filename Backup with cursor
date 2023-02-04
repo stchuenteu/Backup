@@ -1,0 +1,21 @@
+DECLARE @DB_Name Varchar(100)
+
+
+Declare DB_BACKUP Cursor
+FOR 
+SELECT [Name]
+from master.dbo.sysdatabases
+Where Name not in ('Master','Model', 'msdb','Temdb')
+
+OPEN DB_BACKUP
+FETCH NEXT FROM DB_BACKUP INTO @DB_Name
+
+While @@FETCH_STATUS = 0 
+
+
+BEGIN
+  PRINT 'BACKUP DATABASE '+@DB_Name + ' TO DISK =''C:\BackupDrive\'+@DB_Name +'.bak With INIT, STAT = 5'
+  FETCH NEXT FROM DB_BACKUP INTO @DB_Name
+END
+  Close DB_BACKUP
+DEALLOCATE DB_BACKUP
